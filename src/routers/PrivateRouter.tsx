@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { getCookie } from "../lib/cookie";
+import { useAppSelector } from "../lib/hook";
 
 interface PrivateRouteProps {
   children: React.ReactNode;
@@ -14,7 +15,7 @@ export const PrivateRoute = ({
   requiredRoles,
 }: PrivateRouteProps) => {
   const token = getCookie("token");
-  const role = "";
+  const { role } = useAppSelector((state) => state.auth);
 
   if (!token) {
     return <Navigate to={redirectTo} replace />;
