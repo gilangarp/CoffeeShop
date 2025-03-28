@@ -1,53 +1,46 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { authThunk } from "../authAction";
+import { IAuthDto } from "../authType";
 
 export interface IAuthState {
-  token: string | null;
+  formData: IAuthDto;
   role: string | null;
   uuid: string | null;
+  is_new_user: boolean;
   loading: boolean;
-  errorMessage: string | null;
+  errorMessage: string;
 }
 
 const initialState: IAuthState = {
-  token: null,
+  formData: {
+    email: "",
+    password: "",
+  },
   role: null,
   uuid: null,
+  is_new_user: false,
   loading: false,
-  errorMessage: null,
+  errorMessage: "",
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setToken: (state, action: PayloadAction<{ token: string }>) => {
-      state.token = action.payload.token;
-    },
-    setRole: (state, action: PayloadAction<{ role: string }>) => {
-      state.role = action.payload.role;
-    },
-    setId: (state, action: PayloadAction<{ id: string }>) => {
-      state.uuid = action.payload.id;
-    },
-    removeToken: (state) => {
-      state.token = null;
-    },
-    removeRole: (state) => {
-      state.role = null;
-    },
-    removeId: (state) => {
-      state.uuid = null;
+    setFormData: (state, action: PayloadAction<IAuthDto>) => {
+      state.formData = action.payload;
     },
     logout: (state) => {
-      state.token = null;
       state.uuid = null;
       state.role = null;
       state.loading = false;
-      state.errorMessage = null;
+      state.errorMessage = "";
     },
     clearErrorMessage: (state) => {
-      state.errorMessage = null;
+      state.errorMessage = "";
+    },
+    resetForm: (state) => {
+      state.formData = { email: "", password: "" };
     },
   },
 
@@ -55,17 +48,19 @@ const authSlice = createSlice({
     builder
       .addCase(authThunk.pending, (state) => {
         state.loading = true;
-        state.errorMessage = null;
+        state.errorMessage = "";
       })
-      .addCase(authThunk.rejected, (state) => {
+      .addCase(authThunk.rejected, (state, action) => {
         state.loading = false;
+        state.errorMessage =
+          action.payload?.error?.message || "Unknown error occurred";
       })
       .addCase(authThunk.fulfilled, (state, { payload }) => {
-        state.token = payload.token;
         state.role = payload.role;
         state.uuid = payload.uuid;
+        state.is_new_user = payload.is_new_user;
         state.loading = false;
-        state.errorMessage = null;
+        state.errorMessage = "";
       });
   },
 });

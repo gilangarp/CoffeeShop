@@ -6,7 +6,7 @@ import persistReducer from "redux-persist/es/persistReducer";
 const authPersistConfig: PersistConfig<authState> = {
   key: "auth-token",
   storage,
-  whitelist: ["id", "role"],
+  whitelist: ["uuid", "role"],
 };
 export const persistedAuthReducer = persistReducer(
   authPersistConfig,
