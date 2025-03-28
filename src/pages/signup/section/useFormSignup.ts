@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   togglePassword,
   togglePasswordConfirm,
@@ -13,6 +14,10 @@ export default function useFormSignup() {
   const { formData, passwordConfirm, error, loading, message } = useAppSelector(
     (state) => state.signup
   );
+
+  useEffect(() => {
+    dispatch(signupActions.clearErrorMessage());
+  }, [dispatch]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

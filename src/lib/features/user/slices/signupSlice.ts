@@ -45,6 +45,10 @@ const signupSlice = createSlice({
         state.error = "";
       }
     },
+    clearErrorMessage: (state) => {
+      state.message = "";
+      state.error = "";
+    },
     resetForm: (state) => {
       state.formData = { name: "", email: "", password: "" };
       state.passwordConfirm = "";
