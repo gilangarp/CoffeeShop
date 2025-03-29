@@ -1,11 +1,13 @@
 import imageSignup from "../../assets/image-signup.png";
 import Notification from "../../components/informational/notification/Notification";
-import FormSignup from "./section/FormSignup";
-import HeaderSignup from "./section/HeaderSignup";
-import useFormSignup from "./section/useFormSignup";
+import AddressForm from "./section/AddressForm";
+import SignupHeader from "./section/SignupHeader";
+import SignupFooter from "./section/SignupFooter";
+import SignupForm from "./section/SignupForm";
+import useFormSignup from "./section/useSignup";
 
 const Signup = () => {
-  const { message, error } = useFormSignup();
+  const { message, error, currentSection } = useFormSignup();
   return (
     <div className="w-full h-screen grid grid-cols-1 md:grid-cols-[auto,1fr] bg-background">
       <img
@@ -27,8 +29,10 @@ const Signup = () => {
             <Notification variant="error" message={error} />
           </div>
         )}
-        <HeaderSignup />
-        <FormSignup />
+        <SignupHeader />
+        {currentSection === "signup" && <SignupForm />}
+        {currentSection === "address" && <AddressForm />}
+        <SignupFooter />
       </div>
     </div>
   );

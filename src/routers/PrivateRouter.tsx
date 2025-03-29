@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { getCookie } from "../lib/cookie";
 import { useAppSelector } from "../lib/hook";
 
@@ -16,7 +16,11 @@ export const PrivateRoute = ({
 }: PrivateRouteProps) => {
   const token = getCookie("token");
   const { role } = useAppSelector((state) => state.auth);
+  const location = useLocation();
 
+  if (token && location.pathname === "/signin") {
+    return <Navigate to="/" replace />;
+  }
   if (!token) {
     return <Navigate to={redirectTo} replace />;
   }

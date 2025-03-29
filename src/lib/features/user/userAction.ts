@@ -1,11 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { ISignupDto, ISignupResponse } from "./userType";
+import { IRegisterDataResponse, ISignupDto, ISignupResponse } from "./userType";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { IResponse } from "../../responseType";
 import apiConfig from "../../../config/apiConfig";
 
 export const signupThunk = createAsyncThunk<
-  string,
+  IRegisterDataResponse,
   ISignupDto,
   { rejectValue: IResponse }
 >("signupThunk", async (form, { rejectWithValue }) => {
@@ -15,7 +15,7 @@ export const signupThunk = createAsyncThunk<
       form
     );
 
-    return result.data.message;
+    return result.data.data;
   } catch (error) {
     if (error instanceof AxiosError) {
       const errorMessage =

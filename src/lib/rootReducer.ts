@@ -1,12 +1,11 @@
 import { combineReducers } from "redux";
-import { persistedAuthReducer } from "./persistConfig";
+import { persistedAuthReducer, persistedSignupReducer } from "./persistConfig";
 import { passwordReducer } from "./features/password/slice/passwordSlice";
-import { signupReducer } from "./features/user/slices/signupSlice";
 
 const rootReducer = combineReducers({
   auth: persistedAuthReducer,
   password: passwordReducer,
-  signup: signupReducer,
+  signup: persistedSignupReducer,
 });
 
 export default rootReducer;

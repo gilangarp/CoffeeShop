@@ -3,22 +3,33 @@ import { validatePassword } from "../../../../utils/validatePassword/validatePas
 import { ISignupDto } from "../userType";
 import { signupThunk } from "../userAction";
 
-interface signupState {
+interface SignupState {
   formData: ISignupDto;
   passwordConfirm: string;
+  role: string;
+  uuid: string;
+  currentSection: "signup" | "address";
   message: string;
   loading: boolean;
   error: string;
 }
 
-const initialState: signupState = {
+const initialState: SignupState = {
   formData: {
     name: "",
     email: "",
     password: "",
+    city: "",
+    country: "",
+    postalCode: "",
+    street: "",
+    state: "",
   },
   message: "",
+  role: "",
+  uuid: "",
   passwordConfirm: "",
+  currentSection: "signup",
   loading: false,
   error: "",
 };
@@ -45,12 +56,24 @@ const signupSlice = createSlice({
         state.error = "";
       }
     },
+    setCurrentSection: (state, action: PayloadAction<"signup" | "address">) => {
+      state.currentSection = action.payload;
+    },
     clearErrorMessage: (state) => {
       state.message = "";
       state.error = "";
     },
     resetForm: (state) => {
-      state.formData = { name: "", email: "", password: "" };
+      state.formData = {
+        name: "",
+        email: "",
+        password: "",
+        city: "",
+        country: "",
+        postalCode: "",
+        street: "",
+        state: "",
+      };
       state.passwordConfirm = "";
     },
   },
@@ -61,14 +84,13 @@ const signupSlice = createSlice({
         state.error = "";
         state.message = "";
       })
-      .addCase(
-        signupThunk.fulfilled,
-        (state, action: PayloadAction<string>) => {
-          state.loading = false;
-          state.error = "";
-          state.message = action.payload;
-        }
-      )
+      .addCase(signupThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.error = "";
+        state.role = payload.role;
+        state.uuid = payload.uuid;
+        state.currentSection = "address";
+      })
 
       .addCase(signupThunk.rejected, (state, action) => {
         state.loading = false;
@@ -83,4 +105,5 @@ export const signupActions = {
   signupThunk,
 };
 
+export type signupState = ReturnType<typeof signupSlice.reducer>;
 export const signupReducer = signupSlice.reducer;

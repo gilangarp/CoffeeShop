@@ -1,12 +1,11 @@
 import { MdOutlineMail } from "react-icons/md";
 import InputField from "../../../components/form/InputFields/InputFields";
 import { FaRegEye, FaRegEyeSlash, FaRegUser } from "react-icons/fa";
-import useFormSignup from "./useFormSignup";
+import useFormSignup from "./useSignup";
 import Button from "../../../components/interactive/Button/Button";
 import { CgPassword } from "react-icons/cg";
-import { Link } from "react-router-dom";
 
-export default function FormSignup() {
+export default function SignupForm() {
   const {
     handleToggle,
     showPassword,
@@ -15,13 +14,12 @@ export default function FormSignup() {
     handleChange,
     formData,
     handleConfirm,
-    handleSubmit,
     passwordConfirm,
-    loading,
+    addressSection,
   } = useFormSignup();
 
   return (
-    <form className="w-full flex flex-col gap-5" onSubmit={handleSubmit}>
+    <div className="w-full flex flex-col gap-5">
       <InputField
         name="name"
         placeholder="Enter Your Full Name"
@@ -92,16 +90,14 @@ export default function FormSignup() {
         </InputField.Icon>
       </InputField>
 
-      <Button type="submit" disabled={loading}>
-        {loading ? "Registering..." : "Register"}
+      <Button
+        onClick={(e) => {
+          e.preventDefault();
+          addressSection();
+        }}
+      >
+        Next
       </Button>
-
-      <div className="flex items-center gap-3 justify-center ">
-        <h1 className="text-text-gray">Have An Account?</h1>
-        <Link className="text-orange" to="/signin">
-          Signin
-        </Link>
-      </div>
-    </form>
+    </div>
   );
 }

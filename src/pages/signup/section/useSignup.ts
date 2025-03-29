@@ -5,15 +5,17 @@ import {
 } from "../../../lib/features/password/slice/passwordSlice";
 import { signupActions } from "../../../lib/features/user/slices/signupSlice";
 import { useAppDispatch, useAppSelector } from "../../../lib/hook";
+import { setCookie } from "../../../lib/cookie";
+import { useNavigate } from "react-router-dom";
 
-export default function useFormSignup() {
+export default function useSignup() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { showPassword, showPasswordConfirm } = useAppSelector(
     (state) => state.password
   );
-  const { formData, passwordConfirm, error, loading, message } = useAppSelector(
-    (state) => state.signup
-  );
+  const { formData, passwordConfirm, currentSection, error, loading, message } =
+    useAppSelector((state) => state.signup);
 
   useEffect(() => {
     dispatch(signupActions.clearErrorMessage());
@@ -44,18 +46,46 @@ export default function useFormSignup() {
     dispatch(togglePasswordConfirm());
   };
 
+  const addressSection = () => {
+    dispatch(signupActions.setCurrentSection("address"));
+  };
+
+  const signupSection = () => {
+    dispatch(signupActions.setCurrentSection("signup"));
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!formData) return;
 
-    const { email, password, name } = formData;
+    const { email, password, name, city, country, postalCode, street, state } =
+      formData;
 
     if (password !== passwordConfirm) {
       return;
     }
-    dispatch(signupActions.signupThunk({ name, email, password }));
-    dispatch(signupActions.resetForm());
+    const result = await dispatch(
+      signupActions.signupThunk({
+        name,
+        email,
+        password,
+        city,
+        country,
+        postalCode,
+        street,
+        state,
+      })
+    );
+    if (signupActions.signupThunk.fulfilled.match(result)) {
+      const { token } = result.payload;
+      setCookie("token", token);
+
+      navigate("/profile");
+
+      dispatch(signupActions.resetForm());
+      dispatch(signupActions.setCurrentSection("signup"));
+    }
   };
 
   return {
@@ -73,5 +103,9 @@ export default function useFormSignup() {
     loading,
     formData,
     message,
+
+    currentSection,
+    addressSection,
+    signupSection,
   };
 }
