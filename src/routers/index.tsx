@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Home from "../pages/home/Home";
 import Signup from "../pages/signup/Signup";
 import SignIn from "../pages/signin/SignIn";
@@ -6,8 +6,10 @@ import { Error } from "../pages/Error/Error";
 import UserLayout from "../pages/layout/UserLayout";
 import { PrivateRoute } from "./PrivateRouter";
 import { Unauthorized } from "../pages/Error/Unauthorized";
+import { getCookie } from "../lib/cookie";
 
 export default function AppRoutes() {
+  const token = getCookie("token");
   return (
     <BrowserRouter>
       <Routes>
@@ -15,17 +17,13 @@ export default function AppRoutes() {
           <Route path="/signup" element={<Signup />} />
           <Route
             path="/signin"
-            element={
-              <PrivateRoute requiredRoles={["user"]} redirectTo="/">
-                <SignIn />
-              </PrivateRoute>
-            }
+            element={token ? <Navigate to="/" replace /> : <SignIn />}
           />
           <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/" element={<UserLayout />}>
-            <Route index element={<Home />} />
+          <Route path="/" element={<Home />} />
+          <Route element={<UserLayout />}>
             <Route
-              path="/dashboard"
+              path="/profile"
               element={
                 <PrivateRoute
                   requiredRoles={["admin", "user"]}
