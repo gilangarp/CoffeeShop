@@ -18,6 +18,7 @@ export default function Navbar({ variant = "secondary" }: NavbarProps) {
     handleSignUp,
     handleLogout,
   } = useNavbar();
+
   return (
     <nav
       className={`${
@@ -26,7 +27,7 @@ export default function Navbar({ variant = "secondary" }: NavbarProps) {
           : variant === "secondary"
           ? "bg-[#0B0909]"
           : "bg-[#0B0909] bg-opacity-10"
-      } flex items-center justify-between w-full px-[21px] md:px-20 lg:px-32 py-[21px] md:py-6`}
+      } flex items-center justify-between w-full px-[21px] md:px-20 lg:px-32 py-[21px] md:py-6 fixed top-0 left-0 z-50`}
     >
       <div className="flex items-end gap-10">
         {variant === "primary" ? <Brand variant="secondary" /> : <Brand />}

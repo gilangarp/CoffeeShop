@@ -15,9 +15,16 @@ export default {
         warning: "#DC6803",
         info: "#0DCAF0",
       },
+      backgroundImage: {
+        "hero-image-home": 'url("/hero-image-home.png")',
+        "gray-to-dark": "linear-gradient(to bottom, #777C82, #0B0909)",
+      },
       fontFamily: {
         sacramento: ["Sacramento", "cursive"],
         jakarta: ["Plus Jakarta Sans", "sans-serif"],
+      },
+      screens: {
+        sm: "500px",
       },
     },
   },
