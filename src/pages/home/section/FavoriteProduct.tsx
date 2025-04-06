@@ -1,49 +1,33 @@
+import { useEffect } from "react";
 import CardProduct from "../../../components/visual/Card/CardProduct";
-import test from "../../../assets/hero-image-home-about.png";
-const dummyProductData = [
-  {
-    id: "1",
-    image: test,
-    name: "Hazelnut Latte",
-    description:
-      "A rich, creamy latte with the perfect balance of hazelnut flavor, ideal for a relaxing afternoon break.",
-    price: "20000",
-    discount: "10000",
-    rating: "4",
-  },
-  {
-    id: "2",
-    image: test,
-    name: "Vanilla Cappuccino",
-    description:
-      "A classic cappuccino topped with a smooth, fragrant vanilla foam, perfect for any coffee lover.",
-    price: "22000",
-    rating: "4",
-  },
-  {
-    id: "3",
-    image: test,
-    name: "Caramel Macchiato",
-    description:
-      "A delicious combination of espresso and steamed milk, topped with a rich caramel sauce.",
-    price: "25000",
-    rating: "4",
-  },
-  {
-    id: "4",
-    image: test,
-    name: "Iced Mocha",
-    description:
-      "A cool, refreshing iced coffee with chocolate syrup and a splash of milk, perfect for warm days.",
-    price: "18000",
-    rating: "4",
-  },
-];
+import { useAppDispatch, useAppSelector } from "../../../lib/hook";
+import { getAllProductAction } from "../../../lib/features/product/slice/getAllProductSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function FavoriteProduct() {
-  const handleBuy = (id: string) => {
-    console.log(`Buying product with ID: ${id}`);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { product, loading } = useAppSelector((state) => state.product);
+
+  const handleBuyClick = (id: string) => {
+    navigate(`/detail-product/${id}`);
   };
+
+  useEffect(() => {
+    dispatch(
+      getAllProductAction.getAllProductThunk({
+        category: "Favorite Product",
+      })
+    );
+  }, [dispatch]);
+
+  console.log(product);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const displayedProducts = product.slice(0, 4);
+
   return (
     <section className="flex flex-col px-[21px] md:px-20 lg:px-32 py-[60px] gap-6">
       <div className="flex flex-col items-center gap-4">
@@ -57,10 +41,20 @@ export default function FavoriteProduct() {
           might be yours too!
         </p>
       </div>
-      <div className="flex flex-wrap justify-between gap-6 ">
-        {dummyProductData.map((product) => (
-          <CardProduct key={product.id} product={product} buy={handleBuy} />
-        ))}
+      <div className="flex flex-wrap justify-center sm:justify-between gap-6 ">
+        {displayedProducts.length === 0 ? (
+          <div className="text-center text-gray-500">
+            No favorite products available.
+          </div>
+        ) : (
+          displayedProducts.map((product) => (
+            <CardProduct
+              key={product.uuid}
+              product={product}
+              buy={handleBuyClick}
+            />
+          ))
+        )}
       </div>
     </section>
   );
